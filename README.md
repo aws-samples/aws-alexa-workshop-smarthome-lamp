@@ -2,6 +2,16 @@
 
 This section introducts how to create an thing and interact with the thing using AWS Iot Core.
 
+##  Table of Contents
+(1) Creating your first “Thing”, security policies and certificates.
+(2) Connect Wizard
+(3) Creating Things
+(4) Adjust our “Thing” Security Policy
+(5) Quick Review
+(6) MQTT pub/sub
+(7) test MQTT pub/sub
+(8) Listen to the Shadow
+
 ##	Step 1 - Creating your first “Thing”, security policies and certificates.
 Let’s get your account setup with a new Thing, certificates and security policies.
 
@@ -120,26 +130,37 @@ The above are the three requirement components to use AWS IoT.
 
 ## Step 6 - Configure your local credentials
 
-* install [awscli](https://aws.amazon.com/cn/cli/) by running 
+* (1) If you are using EC2, you could simply attach a role to the running EC2 with the policy that has the permission to interact with Iot Core (for example, IotFullAccess).
+
+* (2) If you are using a PC or VM outside of AWS. 
+
+** install [awscli](https://aws.amazon.com/cn/cli/) by running 
 
 ```
 pip install awscli
 ```
 
-* Run 'aws configure' to configure your local AKSK & set region cofiguration.
+**  Run 'aws configure' to configure your local AKSK & set region cofiguration.
+**  Make sure your AWS REGION in the code is correct! Look at the mqttc.configureEndpoint and make sure it matches.
+**  Make sure your certificates are in the same location as the file you’re running or edit the code with the part of your certificates.
 
-* Make sure your AWS REGION in the code is correct! Look at the mqttc.configureEndpoint and make sure it matches.
-* Make sure your certificates are in the same location as the file you’re running or edit the code with the part of your certificates.
+## Step 7 - MQTT pub/sub
 
-## Step 7 - Run the Code
+The sample code is attached below, you could also download it [from here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/sample.py). 
 
-Extract the certificates from the zip file you downloaded above.
+Before you run the code,
+
+(1) Extract the certificates from the zip file you downloaded above.
 
 *  rootCA.pem is the same for all devices, we have already have it [here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/credentials/rootCA.pem) that is downloaded from https://www.amazontrust.com/repository/AmazonRootCA1.pem
 *  privateKey.pem is ratchet.private.key file from the ZIP file
 *  certificate.pem is ratchet.cert.pem file from the ZIP file
 
-And the sample code goes like this, you could also download it [here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/sample.py).  run it by using command
+(2) configure your own endpoint in 'configureEndpoint', you could find it in Iot console - settings
+
+![](img/lab1-18.png)
+
+(3) run it by using command
 
 ```
 python sample.py'
@@ -169,7 +190,7 @@ mqttc = AWSIoTMQTTClient("1234")
 
 # If you are using an internal network, you will meet the error "connection refused"
 # Please use a guest network that is not blocking 8883
-mqttc.configureEndpoint("data.iot.us-west-2.amazonaws.com",8883)
+mqttc.configureEndpoint("xxxxx.iot.us-west-2.amazonaws.com",8883)
 
 # rootCA.pem is the same for all devices
 # privateKey.pem is device-name.private.key from the ZIP file
@@ -216,7 +237,7 @@ mqttc.disconnect()
 
 ```
 
-## Step 7 - Test 
+## Step 7 - Test sub/pub
 
 To check and see if your message was published to the message broker go to the MQTT Client and subscribe to the iot topic and you should see your JSON Payload.
 
@@ -226,5 +247,114 @@ To check and see if your message was published to the message broker go to the M
 
 ![](img/lab1-10.png)
 
+
+## Step 8 - Listen to the Shadow 
+
+The sample code is attached below, you could also download it [from here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/shadow.py).
+
+Before you run it, 
+* revise your thingName
+* Configure your endpoint like the way you did in #Step 6.
+* Configure your credentials like the way you did in #Step 6.
+* install qrcode by running
+
+```
+pip install qrcode --user
+```
+
+```
+#!/usr/bin/python
+
+# Setting up.
+# Make sure your host and region are correct.
+
+import sys
+import ssl
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+import json
+import time
+import qrcode
+
+
+#revise your thingName
+thingName ="first"
+clientId="myShadowClient"
+
+
+# A programmatic shadow handler name prefix.
+SHADOW_HANDLER = "MyRPi"
+
+# Custom Shadow callback
+def customShadowCallback_Delta(payload, responseStatus, token):
+    # payload is a JSON string ready to be parsed using json.loads(...)
+    # in both Py2.x and Py3.x
+    print(responseStatus)
+    payloadDict = json.loads(payload)
+    print("++++++++DELTA++++++++++")
+    print("power: " + str(payloadDict["state"]["power"]))
+    print("version: " + str(payloadDict["version"]))
+    print("+++++++++++++++++++++++\n\n")
+
+
+# Create a deviceShadow with persistent subscription
+shadow = AWSIoTMQTTShadowClient(thingName)
+
+#Setup our MQTT client and security certificates
+#Make sure your certificate names match what you downloaded from AWS IoT
+
+#Use the endpoint from the settings page in the IoT console
+shadow.configureEndpoint("xxxxx.ats.iot.cn-north-1.amazonaws.com.cn",8883)
+
+
+# rootCA.pem is the same for all devices
+# privateKey.pem is device-name.private.key from the ZIP file
+# certificate.pem is device-name.cert.pem from the ZIP file
+shadow.configureCredentials("credentials/rootCA.pem","credentials/privateKey.pem","credentials/certificate.pem")
+
+
+# AWSIoTMQTTShadowClient configuration
+shadow.configureAutoReconnectBackoffTime(1, 32, 20)
+shadow.configureConnectDisconnectTimeout(10)  # 10 sec
+shadow.configureMQTTOperationTimeout(5)  # 5 sec
+
+# Connect to AWS IoT
+shadow.connect()
+
+# Create a deviceShadow with persistent subscription
+deviceShadowHandler = shadow.createShadowHandlerWithName(thingName, True)
+
+
+# Listen on deltas
+deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
+
+# Loop forever
+while True:
+    time.sleep(1)
+
+shadow.disconnect()
+```
+
+## Step 8 - Test Shadow 
+
+In the lab, we only demo the on & off of the device, the shadow should looks like this 
+
+```
+{
+    "state": {
+    {
+      "desired": {
+        "power": "ON"
+      }
+    }
+    }
+}
+```
+
+For more information upon shadow, please check [using shadows](https://docs.aws.amazon.com/zh_cn/iot/latest/developerguide/using-device-shadows.html)
+
+Run the test by updating the shadow.
+remember to replace 'first' with your own device name.
+![](img/lab1-19.png)
 
 

@@ -6,8 +6,10 @@
 import sys
 import ssl
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import json
 import time
+import qrcode
 
 #Setup our MQTT client and security certificates
 #Make sure your certificate names match what you downloaded from AWS IoT
@@ -55,11 +57,18 @@ mqttc.connect()
 print "Connected"
 
 #Loop until terminated
+
 while True:
     send()
     time.sleep(5)
 
-mqttc.disconnect()
 
 #To check and see if your message was published to the message broker go to the MQTT Client and subscribe to the iot topic and you should see your JSON Payload
+
+
+
+mqttc.disconnect()
+
+
+
 
