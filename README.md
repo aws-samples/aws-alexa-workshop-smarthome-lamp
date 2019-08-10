@@ -385,11 +385,9 @@ the shadow message should looks like this
 ```
 {
     "state": {
-    {
       "desired": {
         "power": "ON"
       }
-    } 
     }
 }
 ```
