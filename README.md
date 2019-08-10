@@ -1,4 +1,6 @@
+## Alexa Workshop Guide : Smart Home Session
 
+This section introducts how to create an thing and interact with the thing using AWS Iot Core.
 
 ##	Step 1 - Creating your first “Thing”, security policies and certificates.
 Let’s get your account setup with a new Thing, certificates and security policies.
@@ -116,7 +118,35 @@ Let’s have a quick review.
 
 The above are the three requirement components to use AWS IoT.
 
-## Step 6
+## Step 6 - Configure your local credentials
+
+* install [awscli](https://aws.amazon.com/cn/cli/) by running 
+
+```
+pip install awscli
+```
+
+* Run 'aws configure' to configure your local AKSK & set region cofiguration.
+
+* Make sure your AWS REGION in the code is correct! Look at the mqttc.configureEndpoint and make sure it matches.
+* Make sure your certificates are in the same location as the file you’re running or edit the code with the part of your certificates.
+
+## Step 7 - Run the Code
+
+Extract the certificates from the zip file you downloaded above.
+
+*  rootCA.pem is the same for all devices, we have already have it [here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/credentials/rootCA.pem) that is downloaded from https://www.amazontrust.com/repository/AmazonRootCA1.pem
+*  privateKey.pem is ratchet.private.key file from the ZIP file
+*  certificate.pem is ratchet.cert.pem file from the ZIP file
+
+And the sample code goes like this, you could also download it [here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/sample.py).  run it by using command
+
+```
+python sample.py'
+```
+
+If anything goes wrong, please check the following thing:
+* You are NOT using your company's internal network. Most companies IT block 8443 port for security reason. Please use your own network or a guest network. 
 
 ```
 #!/usr/bin/python
@@ -136,8 +166,16 @@ import time
 mqttc = AWSIoTMQTTClient("1234")
 
 #Use the endpoint from the settings page in the IoT console
+
+# If you are using an internal network, you will meet the error "connection refused"
+# Please use a guest network that is not blocking 8883
 mqttc.configureEndpoint("data.iot.us-west-2.amazonaws.com",8883)
-mqttc.configureCredentials("./rootCA.pem","./privateKey.pem","./certificate.pem")
+
+# rootCA.pem is the same for all devices
+# privateKey.pem is device-name.private.key from the ZIP file
+# certificate.pem is device-name.cert.pem from the ZIP file
+
+mqttc.configureCredentials("credentials/rootCA.pem","credentials/privateKey.pem","credentials/certificate.pem")
 
 #Function to encode a payload into JSON
 def json_encode(string):
@@ -177,6 +215,16 @@ mqttc.disconnect()
 
 
 ```
+
+## Step 7 - Test 
+
+To check and see if your message was published to the message broker go to the MQTT Client and subscribe to the iot topic and you should see your JSON Payload.
+
+* Open the IoT Console
+* Click on Test
+* Subscribe to #
+
+![](img/lab1-10.png)
 
 
 

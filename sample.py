@@ -15,7 +15,16 @@ import time
 mqttc = AWSIoTMQTTClient("1234")
 
 #Use the endpoint from the settings page in the IoT console
-mqttc.configureEndpoint("a14l04j2viit0o.ats.iot.cn-north-1.amazonaws.com.cn",8883)
+
+#	Most company's internet block 8883 port. 
+#	If you are using an internal network, you will meet the error "connection refused"
+#	Please use a guest network 
+mqttc.configureEndpoint("xxxxxx.ats.iot.cn-north-1.amazonaws.com.cn",8883)
+
+
+#	rootCA.pem is the same for all devices
+#	privateKey.pem is device-name.private.key from the ZIP file
+#	certificate.pem is device-name.cert.pem from the ZIP file
 mqttc.configureCredentials("credentials/rootCA.pem","credentials/privateKey.pem","credentials/certificate.pem")
 
 #Function to encode a payload into JSON
