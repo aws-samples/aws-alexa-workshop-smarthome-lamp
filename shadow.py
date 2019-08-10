@@ -26,7 +26,7 @@ clientId="myShadowClient"
 # }
 
 # A programmatic shadow handler name prefix.
-SHADOW_HANDLER = "MyRPi"
+SHADOW_HANDLER = "ratchet"
 
 # Custom Shadow callback
 def customShadowCallback_Delta(payload, responseStatus, token):

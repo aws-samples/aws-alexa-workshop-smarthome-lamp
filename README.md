@@ -256,7 +256,7 @@ Before you run it,
 * revise your thingName
 * Configure your endpoint like the way you did in #Step 6.
 * Configure your credentials like the way you did in #Step 6.
-* install qrcode by running
+* install [qrcode](https://pypi.org/project/qrcode/) by running
 
 ```
 pip install qrcode --user
@@ -278,12 +278,12 @@ import qrcode
 
 
 #revise your thingName
-thingName ="first"
+thingName ="ratchet"
 clientId="myShadowClient"
 
 
 # A programmatic shadow handler name prefix.
-SHADOW_HANDLER = "MyRPi"
+SHADOW_HANDLER = "ratchet"
 
 # Custom Shadow callback
 def customShadowCallback_Delta(payload, responseStatus, token):
@@ -320,10 +320,10 @@ shadow.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect to AWS IoT
 shadow.connect()
+print "connected"
 
 # Create a deviceShadow with persistent subscription
 deviceShadowHandler = shadow.createShadowHandlerWithName(thingName, True)
-
 
 # Listen on deltas
 deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
@@ -337,7 +337,12 @@ shadow.disconnect()
 
 ## Step 8 - Test Shadow 
 
-In the lab, we only demo the on & off of the device, the shadow should looks like this 
+In the lab, we only demo the on & off of the device, send a message to the topic.
+```
+$aws/things/first/shadow/update
+```
+
+the shadow message should looks like this 
 
 ```
 {
@@ -345,16 +350,20 @@ In the lab, we only demo the on & off of the device, the shadow should looks lik
     {
       "desired": {
         "power": "ON"
+      },
+      "reported":{
+        "power":"ON"
       }
     }
     }
 }
 ```
 
+
+![](img/lab1-19.png)
+
 For more information upon shadow, please check [using shadows](https://docs.aws.amazon.com/zh_cn/iot/latest/developerguide/using-device-shadows.html)
 
-Run the test by updating the shadow.
-remember to replace 'first' with your own device name.
-![](img/lab1-19.png)
+
 
 
