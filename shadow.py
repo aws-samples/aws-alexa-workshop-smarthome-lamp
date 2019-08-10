@@ -11,6 +11,9 @@ import json
 import time
 import qrcode
 
+#qr code
+img = qrcode.make('http://<amplify-address-here>')  
+img.save('qrcode.png')  
 
 #revise your thingName
 thingName ="ratchet"
@@ -28,6 +31,15 @@ clientId="myShadowClient"
 # A programmatic shadow handler name prefix.
 SHADOW_HANDLER = "ratchet"
 
+#Function to encode a payload into JSON
+def json_encode(string):
+        return json.dumps(string)
+
+#Function to print message
+def on_message(message, response, token):
+    print message
+
+
 # Custom Shadow callback
 def customShadowCallback_Delta(payload, responseStatus, token):
     # payload is a JSON string ready to be parsed using json.loads(...)
@@ -39,6 +51,12 @@ def customShadowCallback_Delta(payload, responseStatus, token):
     print("power: " + str(payloadDict["state"]["power"]))
     print("version: " + str(payloadDict["version"]))
     print("+++++++++++++++++++++++\n\n")
+    shadowMessage = {"state":{"reported":{"power": "ON"}}}
+    shadowMessage = json.dumps(shadowMessage)
+    deviceShadowHandler.on_message= on_message
+    deviceShadowHandler.json_encode=json_encode
+    deviceShadowHandler.shadowUpdate(shadowMessage,on_message, 5)
+    print "Shadow Update Sent"
 
 
 # Create a deviceShadow with persistent subscription
@@ -71,6 +89,7 @@ deviceShadowHandler = shadow.createShadowHandlerWithName(thingName, True)
 
 # Listen on deltas
 deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
+
 
 # Loop forever
 while True:

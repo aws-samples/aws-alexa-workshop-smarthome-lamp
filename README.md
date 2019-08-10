@@ -254,6 +254,7 @@ The sample code is attached below, you could also download it [from here](https:
 
 Before you run it, 
 * revise your thingName
+* replace your own < amplify-address-here > here. The code will genereate a qrcode picture which you will scan later.
 * Configure your endpoint like the way you did in #Step 6.
 * Configure your credentials like the way you did in #Step 6.
 * install [qrcode](https://pypi.org/project/qrcode/) by running
@@ -276,6 +277,9 @@ import json
 import time
 import qrcode
 
+#qr code
+img = qrcode.make('http://<amplify-address-here>')  
+img.save('qrcode.png')  
 
 #revise your thingName
 thingName ="ratchet"
@@ -284,6 +288,14 @@ clientId="myShadowClient"
 
 # A programmatic shadow handler name prefix.
 SHADOW_HANDLER = "ratchet"
+
+#Function to encode a payload into JSON
+def json_encode(string):
+        return json.dumps(string)
+
+#Function to print message
+def on_message(message, response, token):
+    print message
 
 # Custom Shadow callback
 def customShadowCallback_Delta(payload, responseStatus, token):
@@ -295,6 +307,17 @@ def customShadowCallback_Delta(payload, responseStatus, token):
     print("power: " + str(payloadDict["state"]["power"]))
     print("version: " + str(payloadDict["version"]))
     print("+++++++++++++++++++++++\n\n")
+
+    #reported states update 
+    shadowMessage = {"state":{"reported":{"power": "ON"}}}
+
+    shadowMessage = json.dumps(shadowMessage)
+
+    deviceShadowHandler.on_message= on_message
+    deviceShadowHandler.json_encode=json_encode
+    deviceShadowHandler.shadowUpdate(shadowMessage,on_message, 5)
+    print "Shadow Update Sent"
+
 
 
 # Create a deviceShadow with persistent subscription
@@ -328,6 +351,10 @@ deviceShadowHandler = shadow.createShadowHandlerWithName(thingName, True)
 # Listen on deltas
 deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
 
+
+# Listen on deltas
+deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
+
 # Loop forever
 while True:
     time.sleep(1)
@@ -335,9 +362,20 @@ while True:
 shadow.disconnect()
 ```
 
+The code listens to shadow information and send reported status to Iot core. In real life, you make sure that the device'status has been changed before you send reported status. Here, since we don't have hardware in this session, we simply report back as soon as we receive the delta.   
+
+run this code using 
+
+```
+python shadow.py
+``` 
+
+You will find a picture named 'qrcode.png' under the folder you are running this code.  
+
+
 ## Step 8 - Test Shadow 
 
-In the lab, we only demo the on & off of the device, send a message to the topic.
+In the lab, we demo the on & off status of the device by sending to the topic below.
 ```
 $aws/things/first/shadow/update
 ```
@@ -350,15 +388,11 @@ the shadow message should looks like this
     {
       "desired": {
         "power": "ON"
-      },
-      "reported":{
-        "power":"ON"
       }
-    }
+    } 
     }
 }
 ```
-
 
 ![](img/lab1-19.png)
 
