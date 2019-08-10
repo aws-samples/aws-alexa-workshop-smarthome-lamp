@@ -13,7 +13,7 @@ import qrcode
 
 
 #revise your thingName
-thingName ="first"
+thingName ="ratchet"
 clientId="myShadowClient"
 
 # Shadow JSON schema example
