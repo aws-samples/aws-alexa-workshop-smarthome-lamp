@@ -63,16 +63,15 @@ So let’s see exactly what was generated.
 
 Make sure you click the Linux/OSX link to download the connection package.
 
-Note - Do not lose this zip file, it contains your private key file which cannot be retrieved again.
+* Note - **Do not lose this zip file, it contains your private key file which cannot be retrieved again.**
 
 Once you have downloaded the zip file you’ll be able to click the Next step link.
 
-Click Done to complete the Wizard
+* Click Done to complete the Wizard.
 
 ![](img/lab1-8.png)
 
-Note: Do not run the scripts on the last page of the wizard, just click Done. Those scripts are not used.
-
+* Do not need to run the scripts on the last page of the wizard, just click Done.
 
 ##	Step 4 - Adjust our “Thing” Security Policy
 The default security policy created by the above wizard will limit the topics your device can publish on. For the labs in this workshop we’re going to create a more open policy. So we need to find and edit the policy that has been created already.
@@ -148,19 +147,40 @@ pip install awscli
 
 The sample code is attached below, you could also download it [from here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/sample.py). 
 
-Before you run the code,
+Before you run the code, Step 3
 
-(1) Extract the certificates from the zip file you downloaded above.
+(1) Extract the certificates & SDK from the zip file you downloaded above. You will get the following things.
 
-*  rootCA.pem is the same for all devices, we have already have it [here](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/credentials/rootCA.pem) that is downloaded from https://www.amazontrust.com/repository/AmazonRootCA1.pem
 *  privateKey.pem is ratchet.private.key file from the ZIP file
 *  certificate.pem is ratchet.cert.pem file from the ZIP file
+  
+(2) AWSIotPythonSDK and a rootCA.pem that is the same for all devices is needed. Run the [following script](https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/blob/master/start.sh) by 'sh ./start.sh' to get these.
+```
+# stop script on error
+set -e
 
-(2) configure your own endpoint in 'configureEndpoint', you could find it in Iot console - settings
+# Check to see if root CA file exists, download if not
+if [ ! -f ./root-CA.crt ]; then
+  printf "\nDownloading AWS IoT Root CA certificate from AWS...\n"
+  curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > root-CA.crt
+fi
+
+# install AWS Device SDK for Python if not already installed
+if [ ! -d ./aws-iot-device-sdk-python ]; then
+  printf "\nInstalling AWS SDK...\n"
+  git clone https://github.com/aws/aws-iot-device-sdk-python.git
+  pushd aws-iot-device-sdk-python
+  python setup.py install
+  popd
+fi
+
+```
+
+(3) configure your own endpoint in 'configureEndpoint', you could find it in Iot console - settings
 
 ![](img/lab1-18.png)
 
-(3) run it by using command
+(4) After you make sure that you have acquired that SDK and all the certificates, run it by using command
 
 ```
 python sample.py'
