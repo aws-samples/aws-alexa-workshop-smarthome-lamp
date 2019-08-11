@@ -5,6 +5,7 @@ AWS Iot Core.
 
 ##  Table of Contents
 1. [Create a Thing on AWS IoT Console](#create-a-thing-on-aws-iot-console)
+1. [Modify Default Policy](#modify-default-policy)
 1. [Subscribe to IoT Core](#subscribe-to-iot-core)
 1. [Test Shadow](#test-shadow)
 
@@ -42,6 +43,7 @@ To summary, the following contents have been created:
 > Note - **Do not lose this zip file, it contains your private key file which cannot be retrieved again.**
 > Do not need to run the scripts on the last page of the wizard, just click Done.
 
+## Modify Default Policy
 The default security policy created by the above wizard will limit the 
 topics your device can publish on. For the labs in this workshop we’re going 
 to create a more open policy. So we need to find and edit the policy that has been 
