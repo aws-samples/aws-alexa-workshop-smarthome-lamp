@@ -158,3 +158,6 @@ If you met this following error. Try install Pillow via `pip install Pillow --us
 ```
 ImportError: No module named Image
 ```
+
+Next, return to [AWS-Alexa Workshop Smart Home](https://github.com/lab798/aws-alexa-workshop-smarthome),
+and click [Bind Smart Lamp to User](https://github.com/lab798/aws-alexa-workshop-smarthome/blob/master/docs/bind-device.md).

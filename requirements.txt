@@ -1,2 +1,3 @@
 qrcode
 AWSIoTPythonSDK
+Pillow
