@@ -114,8 +114,8 @@ Rename the certificate to **cert.pem** and put in **credentials** folder
 1. Change configurations in [`shadow.py`](./shadow.py)
    - `iotEndpoint`. You could find it in Iot console - settings
    - `thingName`. The name of created thing 
-   - `deviceBindingURL`. If url where you deployed the [Device Binding UI](https://github.com/lab798/aws-alexa-workshop-ui).
-      If you followed the guide, please go to AWS Amplify Console to find it
+   - `deviceBindingURL`. It is the url where you deployed in the [Device Binding UI](https://github.com/lab798/aws-alexa-workshop-ui).
+      If you followed the guide, please go to AWS Amplify Console to find it, which named **Production branch URL**
 ![](img/lab1-18.png)
 
 1. Install dependencies. In this lab, [qrcode](https://pypi.org/project/qrcode/) is being used to 
@@ -150,6 +150,21 @@ the shadow message should looks like this
 ```
 ![](img/lab1-19.png)
 
+You could also see  outputs from the device (shadow.py client) as below:
+```
+Shadow Update Sent
+{  
+   "state":{  
+      "reported":{  
+         "power":"ON"
+      }
+   },
+   "metadata":{  },
+   "version":3,
+   "timestamp":1565610576,
+   "clientToken":"af34e3be-ca88-48aa-adff-66c48957ffbb"
+}
+```
 For more information upon shadow, please check [using shadows](https://docs.aws.amazon.com/zh_cn/iot/latest/developerguide/using-device-shadows.html)
 
 ## Troubleshooting
@@ -161,3 +176,4 @@ ImportError: No module named Image
 
 Next, return to [AWS-Alexa Workshop Smart Home](https://github.com/lab798/aws-alexa-workshop-smarthome),
 and click [Bind Smart Lamp to User](https://github.com/lab798/aws-alexa-workshop-smarthome/blob/master/docs/bind-device.md).
+
