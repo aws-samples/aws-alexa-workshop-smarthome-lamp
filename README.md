@@ -20,7 +20,7 @@ the following. Let’s create our first “thing” and setup the policy and cer
 
 1. Under **Configuring a device**, click the **Getting Started** button
 
-1. On **How are you connecting to AWS IoT?** page, select the platform; choose **Python** for IoT 
+1. On **How are you connecting to AWS IoT?** page, select the platform; choose **Node.js** for IoT 
 Device SDK. This is used to generate a full package for us to quickly connect to AWS IoT. 
 Choose **Next** to continue
 ![](img/lab1-3.png)
