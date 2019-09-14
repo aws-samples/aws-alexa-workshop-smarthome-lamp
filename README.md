@@ -37,7 +37,6 @@ Once you have downloaded the zip file you’ll be able to click the Next step li
 
 To summary, the following contents have been created:
 * A security **policy** allow device to send and receive messages
-* A **`start.sh` script**. This script will download any additional files needed including a sample application.
 * A Linux/OSX zip file containing all certificates
 ![](img/lab1-8.png)
 > Note - **Do not lose this zip file, it contains your private key file which cannot be retrieved again.**
@@ -111,25 +110,28 @@ components to use AWS IoT have been created:
 1. Rename the private key to **private.key** and put in **credentials** folder. 
 Rename the certificate to **cert.pem** and put in **credentials** folder
 
-1. Change configurations in [`shadow.py`](./shadow.py)
+1. Change configurations in [`index.js`](./index.js)
    - `iotEndpoint`. You could find it in Iot console - settings
    - `thingName`. The name of created thing 
-   - `deviceBindingURL`. It is the url where you deployed in the [Device Binding UI](https://github.com/lab798/aws-alexa-workshop-ui).
+   - `deviceBindingUrl`. It is the url where you deployed in the [Device Binding UI](https://github.com/lab798/aws-alexa-workshop-ui).
       If you followed the guide, please go to AWS Amplify Console to find it, which named **Production branch URL**
 ![](img/lab1-18.png)
 
-1. Install dependencies. In this lab, [qrcode](https://pypi.org/project/qrcode/) is being used to 
+1. Install dependencies. In this lab, [qrcode](https://www.npmjs.com/package/qrcode) is being used to 
 generate a QR code which links to the Device Binding URL. 
     ```
-    pip install -r requirements.txt  -t ./
+    npm install
     ```
 
-1. Run `python shadow.py` to start the application. The program listens to shadow information and send 
-reported status to Iot core. In real life, you make sure that the device's status has been changed before 
-you send reported status. Here, since we don't have hardware in this session, we simply report back as 
-soon as we receive the delta.   
+1. Run `node index.js` to start the application. 
 
-You will find a picture named **qrcode.png** under the folder you are running this code.  
+The program listens to shadow information and send reported status to IoT core. In real life, you make sure that 
+the device's status has been changed before you send reported status. Here, since we don't have hardware in this 
+session, we simply report back as soon as we receive the delta.   
+
+The virtual lamp output the QRCode content to its terminal. 
+
+![](img/qrcode-terminal.png)
 
 ## Test Shadow 
 
@@ -150,29 +152,9 @@ the shadow message should looks like this
 ```
 ![](img/lab1-19.png)
 
-You could also see  outputs from the device (shadow.py client) as below:
-```
-Shadow Update Sent
-{  
-   "state":{  
-      "reported":{  
-         "power":"ON"
-      }
-   },
-   "metadata":{  },
-   "version":3,
-   "timestamp":1565610576,
-   "clientToken":"af34e3be-ca88-48aa-adff-66c48957ffbb"
-}
-```
+You could also see  outputs from the device simulator terminal, for example **turn ON Smart Lamp**.
+
 For more information upon shadow, please check [using shadows](https://docs.aws.amazon.com/zh_cn/iot/latest/developerguide/using-device-shadows.html)
-
-## Troubleshooting
-
-If you met this following error. Try install Pillow via `pip install Pillow --user`
-```
-ImportError: No module named Image
-```
 
 Next, return to [AWS-Alexa Workshop Smart Home](https://github.com/lab798/aws-alexa-workshop-smarthome),
 and click [Bind Smart Lamp to User](https://github.com/lab798/aws-alexa-workshop-smarthome/blob/master/docs/bind-device.md).
