@@ -21,7 +21,7 @@ shadow.on('connect', function () {
 
     const initState = {
       state: {
-        desired: {
+        reported: {
           power: "OFF"
         }
       }
