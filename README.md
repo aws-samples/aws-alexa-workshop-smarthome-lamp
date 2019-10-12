@@ -1,11 +1,12 @@
-## My Project
+## Alexa Workshop Smart Home - Virtual Smart Home Lamp
 
-TODO: Fill this README out!
+This is the source code of [Step 2: Build Start Lamp Simulator](https://alexaworkshop.com/smart-home/2.smart-lamp-simulator/).
 
-Be sure to:
+If you are looking for the whole lab, please visit [AWS & Alexa Workshop - Smart Home Skills](https://alexaworkshop.com/smart-home/).
 
-* Change the title in this README
-* Edit your repository description on GitHub
+If you have any issues, please create issues in [aws-samples/aws-alexa-workshop](https://github.com/aws-samples/aws-alexa-workshop/issues) repository.
+
+![](aws_alexa.png)
 
 ## License
 

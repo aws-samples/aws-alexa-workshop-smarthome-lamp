@@ -1,0 +1,27 @@
+{
+  "name": "aws-alexa-workshop-smarthome-lamp",
+  "version": "0.1.0",
+  "description": "AWS & Alexa Workshop virtual Lamp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lab798/aws-alexa-workshop-smarthome-lamp.git"
+  },
+  "keywords": [
+    "AWS",
+    "Alexa"
+  ],
+  "author": "Joe SHI <qiaoshi@amazon.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lab798/aws-alexa-workshop-smarthome-lamp/issues"
+  },
+  "homepage": "https://github.com/lab798/aws-alexa-workshop-smarthome-lamp#readme",
+  "dependencies": {
+    "aws-iot-device-sdk": "^2.2.1",
+    "qrcode": "^1.4.1"
+  }
+}

@@ -1,0 +1,5 @@
+credentials/*.pem
+credentials/*.key
+!credentials/rootCA.pem
+
+qrcode.png
