@@ -2,9 +2,11 @@ const AWSIoT = require('aws-iot-device-sdk');
 const QRCode = require('qrcode');
 
 // Change the configuration below
-const thingName = 'ratchet';
-const iotEndpoint = 'abty4kifln98q-ats.iot.us-east-1.amazonaws.com';
-const deviceBindingUrl = 'https://xxxx.com/';
+const thingName = '<THING-NAME>';
+const iotEndpoint = '<ATS IOT ENDPOINT>';
+const deviceBindingUrl = '<AMPLIFYHOSTINGURL>';
+
+console.log('Smart lamp simulator');
 
 const shadow = AWSIoT.thingShadow({
   keyPath: 'credentials/private.key',
@@ -16,13 +18,15 @@ const shadow = AWSIoT.thingShadow({
 
 let clientTokenUpdate;
 
+
 shadow.on('connect', function () {
+  console.log('Connected');  
   shadow.register(thingName, {}, function () {
 
     const initState = {
       state: {
         reported: {
-          power: "OFF"
+          powerState: "OFF"
         }
       }
     };
@@ -36,20 +40,23 @@ shadow.on('connect', function () {
     console.info('connected to IoT Core...\n');
 
     console.info('This is the QR Code shipped with the Device:');
-    QRCode.toString(`${deviceBindingUrl}?thingName=${thingName}`, {type: 'terminal'}, function (err, string) {
+        QRCode.toString(`${deviceBindingUrl}?thingName=${thingName}`, {type: 'terminal'}, function (err, string) {
       if (err) throw err;
-      console.log(string)
-    })
+          console.log(string)
+          console.log(`Browse to ${deviceBindingUrl}?thingName=${thingName} to register`)
+
+        })
+    
   })
 
 });
 
 shadow.on('delta', function (thingName, stateObject) {
-  const desiredPowerState = stateObject.state.power;
+  const desiredPowerState = stateObject.state.powerState;
   const reportedState = {
     state: {
       reported: {
-        power: desiredPowerState
+        powerState: desiredPowerState
       }
     }
   };
@@ -58,3 +65,7 @@ shadow.on('delta', function (thingName, stateObject) {
 
   console.info(`turn ${desiredPowerState} Smart Lamp`)
 });
+
+shadow.on('error', (err) => { console.log(err) });
+
+shadow.on('offline', () => { console.log('Disconnected') })
