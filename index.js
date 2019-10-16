@@ -1,10 +1,7 @@
 const AWSIoT = require('aws-iot-device-sdk');
 const QRCode = require('qrcode');
+const config = require('./config')
 
-// Change the configuration below
-const thingName = '<THING-NAME>';
-const iotEndpoint = '<ATS IOT ENDPOINT>';
-const deviceBindingUrl = '<AMPLIFYHOSTINGURL>';
 
 console.log('Smart lamp simulator');
 
@@ -12,8 +9,8 @@ const shadow = AWSIoT.thingShadow({
   keyPath: 'credentials/private.key',
   caPath: 'credentials/rootCA.pem',
   certPath: 'credentials/cert.pem',
-  clientId: thingName,
-  host: iotEndpoint
+  clientId: config.thingName,
+  host: config.iotEndpoint
 });
 
 let clientTokenUpdate;
@@ -21,7 +18,7 @@ let clientTokenUpdate;
 
 shadow.on('connect', function () {
   console.log('Connected');  
-  shadow.register(thingName, {}, function () {
+  shadow.register(config.thingName, {}, function () {
 
     const initState = {
       state: {
@@ -31,7 +28,7 @@ shadow.on('connect', function () {
       }
     };
 
-    clientTokenUpdate = shadow.update(thingName, initState);
+    clientTokenUpdate = shadow.update(config.thingName, initState);
 
     if (clientTokenUpdate === null) {
       console.log('update shadow failed, operation still in progress');
@@ -40,10 +37,11 @@ shadow.on('connect', function () {
     console.info('connected to IoT Core...\n');
 
     console.info('This is the QR Code shipped with the Device:');
-        QRCode.toString(`${deviceBindingUrl}?thingName=${thingName}`, {type: 'terminal'}, function (err, string) {
+    let url = `${config.deviceBindingUrl}?thingName=${config.thingName}`
+        QRCode.toString(url, {type: 'terminal'}, function (err, string) {
       if (err) throw err;
           console.log(string)
-          console.log(`Browse to ${deviceBindingUrl}?thingName=${thingName} to register`)
+          console.log(`Browse to ${url} to register`)
 
         })
     
@@ -61,7 +59,7 @@ shadow.on('delta', function (thingName, stateObject) {
     }
   };
 
-  shadow.update(thingName, reportedState);
+  shadow.update(config.thingName, reportedState);
 
   console.info(`turn ${desiredPowerState} Smart Lamp`)
 });
