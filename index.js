@@ -37,7 +37,7 @@ shadow.on('connect', function () {
     console.info('connected to IoT Core...\n');
 
     console.info('This is the QR Code shipped with the Device:');
-    let url = `${config.deviceBindingUrl}?thingName=${config.thingName}`
+    let url = `${config.deviceBindingUrl}device/${config.thingName}`
         QRCode.toString(url, {type: 'terminal'}, function (err, string) {
       if (err) throw err;
           console.log(string)
