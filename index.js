@@ -45,11 +45,11 @@ shadow.on('connect', function () {
 });
 
 shadow.on('delta', function (thingName, stateObject) {
-  const desiredPowerState = stateObject.state.power;
+  const desiredPowerState = stateObject.state.powerState;
   const reportedState = {
     state: {
       reported: {
-        power: desiredPowerState
+        powerState: desiredPowerState
       }
     }
   };
